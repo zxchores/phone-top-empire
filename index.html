@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phone Market Empire | Random Edition</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://api.fontshare.com/v2/css?f[]=clash-display@600,700&f[]=general-sans@400,500,600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div id="toast-container"></div>
+
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">SILICON<span>.</span></div>
+            <button class="theme-toggle" onclick="toggleTheme()">🌓</button>
+        </div>
+
+        <nav class="nav-menu">
+            <button class="nav-btn active" id="btn-factory" onclick="openTab('factory')"><i>🏭</i> Линия</button>
+            <button class="nav-btn" id="btn-warehouse" onclick="openTab('warehouse')"><i>📦</i> Склад</button>
+            <button class="nav-btn" id="btn-mining" onclick="openTab('mining')"><i>⚡</i> Ферма</button>
+            <button class="nav-btn" id="btn-shop" onclick="openTab('shop')"><i>🛒</i> Магазин</button>
+        </nav>
+
+        <div class="sidebar-stats">
+            <div class="stat-bento">
+                <span class="label">Баланс</span>
+                <span class="value" id="balance">$0</span>
+            </div>
+            <div class="stat-bento accent">
+                <span class="label">Доход в сек.</span>
+                <span class="value" id="mining-rate">+$0</span>
+            </div>
+        </div>
+    </aside>
+
+    <main class="main-view">
+        <section id="factory" class="tab-content active">
+            <div class="hero-card">
+                <div class="card-header">
+                    <span class="badge">Рандомная сборка</span>
+                    <div class="auto-control">
+                        <span>Авто-сборка</span>
+                        <label class="switch">
+                            <input type="checkbox" id="auto-toggle" checked>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                </div>
+
+                <h1 id="current-phone-name">Конвейер готов</h1>
+                <p id="current-phone-stats">Выпадет случайная модель</p>
+
+                <div class="progress-zone">
+                    <div class="bar-container">
+                        <div id="auto-progress-fill" class="bar-fill"><div class="laser"></div></div>
+                    </div>
+                    <div class="bar-info">
+                        <span id="progress-percent">0%</span>
+                        <span id="time-left">10.0s</span>
+                    </div>
+                </div>
+
+                <div class="mini-stats">
+                    <div class="ms-item">Собрано: <b id="stats-total-built">0</b></div>
+                    <div class="ms-item">Скорость: <b id="speed-bonus">100%</b></div>
+                </div>
+            </div>
+        </section>
+
+        <section id="warehouse" class="tab-content">
+            <div class="section-header"><h2>Ваш Склад</h2></div>
+            <div class="grid" id="market-sell"></div>
+        </section>
+
+        <section id="mining" class="tab-content">
+            <div class="section-header">
+                <h2>Майнинг-ферма</h2>
+                <span id="slots-count" class="slots-badge">0 / 10</span>
+            </div>
+            <div class="grid" id="mining-grid"></div>
+        </section>
+
+        <section id="shop" class="tab-content">
+            <div class="section-header"><h2>Магазин улучшений</h2></div>
+            <div class="grid" id="upgrades-list"></div>
+        </section>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>
