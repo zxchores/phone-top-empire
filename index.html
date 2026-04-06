@@ -21,36 +21,26 @@
             <button class="nav-btn" id="btn-warehouse" onclick="openTab('warehouse')"><i>📦</i> Склад</button>
             <button class="nav-btn" id="btn-mining" onclick="openTab('mining')"><i>⚡</i> Ферма</button>
             <button class="nav-btn" id="btn-shop" onclick="openTab('shop')"><i>🛒</i> Магазин</button>
+            <button class="nav-btn" id="btn-index" onclick="openTab('index')"><i>📖</i> Индекс</button>
         </nav>
 
-        <div class="sidebar-stats">
-            <div class="stat-bento">
-                <span class="label">Баланс</span>
-                <span class="value" id="balance">$0</span>
-            </div>
-            <div class="stat-bento accent">
-                <span class="label">Доход в сек.</span>
-                <span class="value" id="mining-rate">+$0</span>
-            </div>
+        <div class="balance-card">
+            <span>Ваш баланс</span>
+            <h2 id="money-display">$0</h2>
+            <div class="income-rate">+$<span id="mining-rate">0</span>/с</div>
         </div>
     </aside>
 
     <main class="main-view">
         <section id="factory" class="tab-content active">
-            <div class="hero-card">
-                <div class="card-header">
-                    <span class="badge">Рандомная сборка</span>
-                    <div class="auto-control">
-                        <span>Авто-сборка</span>
-                        <label class="switch">
-                            <input type="checkbox" id="auto-toggle" checked>
-                            <span class="slider"></span>
-                        </label>
+            <div class="factory-container">
+                <div class="conveyor-belt">
+                    <div id="active-phone-card" class="phone-preview">
+                        <div class="item-card">
+                            <h3>Запуск системы...</h3>
+                        </div>
                     </div>
                 </div>
-
-                <h1 id="current-phone-name">Конвейер готов</h1>
-                <p id="current-phone-stats">Выпадет случайная модель</p>
 
                 <div class="progress-zone">
                     <div class="bar-container">
@@ -58,7 +48,7 @@
                     </div>
                     <div class="bar-info">
                         <span id="progress-percent">0%</span>
-                        <span id="time-left">10.0s</span>
+                        <span id="time-left">0.0s</span>
                     </div>
                 </div>
 
@@ -85,6 +75,14 @@
         <section id="shop" class="tab-content">
             <div class="section-header"><h2>Магазин улучшений</h2></div>
             <div class="grid" id="upgrades-list"></div>
+        </section>
+
+        <section id="index" class="tab-content">
+            <div class="section-header">
+                <h2>Индекс моделей</h2>
+                <p>Статистика всех найденных устройств</p>
+            </div>
+            <div class="grid" id="index-grid"></div>
         </section>
     </main>
 
