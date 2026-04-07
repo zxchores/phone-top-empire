@@ -1,19 +1,22 @@
-let money = 2000; 
-let warehouse = [];
-let miningFarm = [];
-let miningSlots = 10;
-let statsTotalBuilt = 0;
-let isProducing = false;
+"use strict";
 
-let upgrades = {
-    speedLevel: 0,
-    slotsLevel: 0,
-    marketingLevel: 0,
-    miningBoostLevel: 0
-};
+const Engine = (function() {
+    // --- ЗАКРЫТЫЕ ДАННЫЕ (ЧИТЕРЫ ИХ НЕ ВИДЯТ) ---
+    let money = 2000; 
+    let warehouse = [];
+    let miningFarm = [];
+    let miningSlots = 10;
+    let statsTotalBuilt = 0;
+    let isProducing = false;
 
-// База данных телефонов
-const phonesDB = [
+    let upgrades = {
+        speedLevel: 0,
+        slotsLevel: 0,
+        marketingLevel: 0,
+        miningBoostLevel: 0 
+    };
+
+        const phonesDB = [
     // --- SAMSUNG (Шаг цены: ~1500, Шаг дохода: ~150) ---
     { name: "Samsung S26 Ultra", cost: 50000, time: 10, mine: 5000, count: 0 },
     { name: "Samsung S26+", cost: 48500, time: 10, mine: 4850, count: 0 },
@@ -67,66 +70,8 @@ const phonesDB = [
     { name: "iPhone 13 Mini", cost: 22000, time: 10, mine: 2200, count: 0 },
     { name: "iPhone 13", cost: 20600, time: 10, mine: 2060, count: 0 },
     { name: "iPhone 12 Pro Max", cost: 19200, time: 10, mine: 1920, count: 0 },
-    { name: "iPhone 12 Pro", cost: 17800, time: 10, mine: 1780, count: 0 },
-    { name: "iPhone 12 Mini", cost: 16400, time: 10, mine: 1640, count: 0 },
-    { name: "iPhone 12", cost: 15000, time: 10, mine: 1500, count: 0 },
-    { name: "iPhone 11 Pro Max", cost: 13600, time: 10, mine: 1360, count: 0 },
-    { name: "iPhone 11 Pro", cost: 12200, time: 10, mine: 1220, count: 0 },
-    { name: "iPhone 11 Mini", cost: 10800, time: 10, mine: 1080, count: 0 },
-    { name: "iPhone 11", cost: 9400, time: 10, mine: 940, count: 0 },
 
-    // --- XIAOMI (Шаг цены: ~2000) ---
-    { name: "Xiaomi 14 Ultra", cost: 48000, time: 10, mine: 4800, count: 0 },
-    { name: "Xiaomi 14 Pro", cost: 46000, time: 10, mine: 4600, count: 0 },
-    { name: "Xiaomi 14", cost: 44000, time: 10, mine: 4400, count: 0 },
-    { name: "Xiaomi 14T Pro", cost: 42000, time: 10, mine: 4200, count: 0 },
-    { name: "Xiaomi 14T", cost: 40000, time: 10, mine: 4000, count: 0 },
-    { name: "Xiaomi 13 Ultra", cost: 38000, time: 10, mine: 3800, count: 0 },
-    { name: "Xiaomi 13 Pro", cost: 36000, time: 10, mine: 3600, count: 0 },
-    { name: "Xiaomi 13", cost: 34000, time: 10, mine: 3400, count: 0 },
-    { name: "Xiaomi 13T Pro", cost: 32000, time: 10, mine: 3200, count: 0 },
-    { name: "Xiaomi 13T", cost: 30000, time: 10, mine: 3000, count: 0 },
-    { name: "Xiaomi 12S Ultra", cost: 28000, time: 10, mine: 2800, count: 0 },
-    { name: "Xiaomi 12 Pro", cost: 26000, time: 10, mine: 2600, count: 0 },
-    { name: "Xiaomi 12", cost: 24000, time: 10, mine: 2400, count: 0 },
-    { name: "Xiaomi 12T Pro", cost: 22000, time: 10, mine: 2200, count: 0 },
-    { name: "Xiaomi 11T Pro", cost: 20000, time: 10, mine: 2000, count: 0 },
-    { name: "Xiaomi Mi 11", cost: 18000, time: 10, mine: 1800, count: 0 },
-    { name: "Xiaomi Mi 10 Ultra", cost: 16000, time: 10, mine: 1600, count: 0 },
-    { name: "Xiaomi Mi 10 Pro", cost: 14000, time: 10, mine: 1400, count: 0 },
-    { name: "Xiaomi Mi 10", cost: 12000, time: 10, mine: 1200, count: 0 },
-
-    // --- GOOGLE PIXEL (Шаг цены: ~1500) ---
-    { name: "Google Pixel 10 Pro", cost: 49000, time: 10, mine: 4900, count: 0 },
-    { name: "Google Pixel 10a", cost: 47500, time: 10, mine: 4750, count: 0 },
-    { name: "Google Pixel 10", cost: 46000, time: 10, mine: 4600, count: 0 },
-    { name: "Google Pixel 9 Pro", cost: 44500, time: 10, mine: 4450, count: 0 },
-    { name: "Google Pixel 9a", cost: 43000, time: 10, mine: 4300, count: 0 },
-    { name: "Google Pixel 9", cost: 41500, time: 10, mine: 4150, count: 0 },
-    { name: "Google Pixel 8 Pro", cost: 40000, time: 10, mine: 4000, count: 0 },
-    { name: "Google Pixel 8a", cost: 38500, time: 10, mine: 3850, count: 0 },
-    { name: "Google Pixel 8", cost: 37000, time: 10, mine: 3700, count: 0 },
-    { name: "Google Pixel 7 Pro", cost: 35500, time: 10, mine: 3550, count: 0 },
-    { name: "Google Pixel 7a", cost: 34000, time: 10, mine: 3400, count: 0 },
-    { name: "Google Pixel 7", cost: 32500, time: 10, mine: 3250, count: 0 },
-    { name: "Google Pixel 6 Pro", cost: 31000, time: 10, mine: 3100, count: 0 },
-    { name: "Google Pixel 6a", cost: 29500, time: 10, mine: 2950, count: 0 },
-    { name: "Google Pixel 6", cost: 28000, time: 10, mine: 2800, count: 0 },
-    { name: "Google Pixel 5a", cost: 26500, time: 10, mine: 2650, count: 0 },
-    { name: "Google Pixel 5", cost: 25000, time: 10, mine: 2500, count: 0 },
-    { name: "Google Pixel 4 XL", cost: 23500, time: 10, mine: 2350, count: 0 },
-    { name: "Google Pixel 4", cost: 22000, time: 10, mine: 2200, count: 0 },
-    { name: "Google Pixel 3a XL", cost: 20500, time: 10, mine: 2050, count: 0 },
-    { name: "Google Pixel 3a", cost: 19000, time: 10, mine: 1900, count: 0 },
-    { name: "Google Pixel 3 XL", cost: 17500, time: 10, mine: 1750, count: 0 },
-    { name: "Google Pixel 3", cost: 16000, time: 10, mine: 1600, count: 0 },
-    { name: "Google Pixel 2 XL", cost: 14500, time: 10, mine: 1450, count: 0 },
-    { name: "Google Pixel 2", cost: 13000, time: 10, mine: 1300, count: 0 },
-    { name: "Google Pixel XL", cost: 11500, time: 10, mine: 1150, count: 0 },
-    { name: "Google Pixel", cost: 10000, time: 10, mine: 1000, count: 0 },
-
-    // --- ONEPLUS (Шаг цены: ~1800) ---
-    { name: "OnePlus 13", cost: 48000, time: 10, mine: 4800, count: 0 },
+    // Модели  OnePlus
     { name: "OnePlus 12", cost: 46200, time: 10, mine: 4620, count: 0 },
     { name: "OnePlus 12R", cost: 44400, time: 10, mine: 4440, count: 0 },
     { name: "OnePlus 11", cost: 42600, time: 10, mine: 4260, count: 0 },
@@ -190,194 +135,182 @@ const phonesDB = [
     { name: "Huawei Mate 10", cost: 14000, time: 10, mine: 1400, count: 0 }
 ];
 
-// 1. Автоматический цикл производства
-function startBuildLoop() {
-    if (isProducing) return;
-    isProducing = true;
-    
-    const phone = phonesDB[Math.floor(Math.random() * phonesDB.length)];
-    const display = document.getElementById('active-phone-card');
-    display.innerHTML = `<div class="item-card"><h3>Линия: ${phone.name}</h3><p>Идет сборка...</p></div>`;
 
-    // Расчет времени с учетом скорости
-    let duration = (phone.time * 1000) / (1 + upgrades.speedLevel * 0.25);
-    let start = Date.now();
+    // --- ВНУТРЕННЯЯ ЛОГИКА ---
 
-    const interval = setInterval(() => {
-        let elapsed = Date.now() - start;
-        let percent = Math.min((elapsed / duration) * 100, 100);
+    function updateUI() {
+        document.getElementById('money-display').innerText = '$' + Math.floor(money).toLocaleString();
+        let baseIncome = miningFarm.reduce((sum, p) => sum + p.mine, 0);
+        let totalIncome = Math.floor(baseIncome * (1 + upgrades.miningBoostLevel * 0.05));
         
-        document.getElementById('auto-progress-fill').style.width = percent + '%';
-        document.getElementById('progress-percent').innerText = Math.floor(percent) + '%';
-        document.getElementById('time-left').innerText = ((duration - elapsed) / 1000).toFixed(1) + 's';
+        document.getElementById('mining-rate').innerText = totalIncome.toLocaleString();
+        const sc = document.getElementById('slots-count');
+        if(sc) sc.innerText = `${miningFarm.length} / ${miningSlots}`;
+        
+        const stb = document.getElementById('stats-total-built');
+        if(stb) stb.innerText = statsTotalBuilt;
+        
+        const sb = document.getElementById('speed-bonus');
+        if(sb) sb.innerText = (100 + upgrades.speedLevel * 20) + '%';
+    }
 
-        if (elapsed >= duration) {
-            clearInterval(interval);
-            isProducing = false;
+    function saveGame() {
+        localStorage.setItem('pme_save_secure', JSON.stringify({ 
+            money, warehouse, miningFarm, upgrades, miningSlots, statsTotalBuilt, phonesDB 
+        }));
+    }
+
+    function startBuildLoop() {
+        if (isProducing) return;
+        isProducing = true;
+        const phone = phonesDB[Math.floor(Math.random() * phonesDB.length)];
+        const card = document.getElementById('active-phone-card');
+        if(card) card.innerHTML = `<div class="item-card"><h3>Сборка...</h3><p>${phone.name}</p></div>`;
+
+        let duration = (phone.time * 1000) / (1 + upgrades.speedLevel * 0.2);
+        let start = Date.now();
+
+        const interval = setInterval(() => {
+            let elapsed = Date.now() - start;
+            let percent = Math.min((elapsed / duration) * 100, 100);
+            const fill = document.getElementById('auto-progress-fill');
+            if(fill) fill.style.width = percent + '%';
             
-            // Логика завершения
-            phone.count = (phone.count || 0) + 1;
-            warehouse.push({...phone, id: Date.now()});
-            statsTotalBuilt++;
-            
+            if (elapsed >= duration) {
+                clearInterval(interval);
+                isProducing = false;
+                phone.count = (phone.count || 0) + 1;
+                warehouse.push({...phone, id: Date.now()});
+                statsTotalBuilt++;
+                updateUI();
+                saveGame();
+                startBuildLoop();
+            }
+        }, 50);
+    }
+
+    // --- ПУБЛИЧНЫЕ МЕТОДЫ (ДОСТУПНЫ ИЗ HTML) ---
+    return {
+        init: function() {
+            const saved = localStorage.getItem('pme_save_secure');
+            if (saved) {
+                const d = JSON.parse(saved);
+                money = d.money; warehouse = d.warehouse; miningFarm = d.miningFarm;
+                upgrades = d.upgrades || upgrades;
+                miningSlots = d.miningSlots; statsTotalBuilt = d.statsTotalBuilt;
+                if(d.phonesDB) {
+                    d.phonesDB.forEach(sd => {
+                        let p = phonesDB.find(x => x.name === sd.name);
+                        if(p) p.count = sd.count || 0;
+                    });
+                }
+            }
             updateUI();
-            saveGame();
-            startBuildLoop(); // Сразу следующий
+            startBuildLoop();
+            console.log("%c Phone Market Empire: Защита активна ", "background: #007aff; color: white;");
+        },
+
+        openTab: function(tabId) {
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            const btn = document.getElementById('btn-' + tabId);
+            if(btn) btn.classList.add('active');
+
+            if(tabId === 'warehouse') this.renderWarehouse();
+            if(tabId === 'mining') this.renderMining();
+            if(tabId === 'shop') this.renderUpgrades();
+            if(tabId === 'index') this.renderIndex();
+        },
+
+        sell: function(id) {
+            let idx = warehouse.findIndex(p => p.id === id);
+            if (idx !== -1) {
+                money += Math.floor(warehouse[idx].cost * (1 + upgrades.marketingLevel * 0.1));
+                warehouse.splice(idx, 1);
+                this.renderWarehouse();
+                updateUI();
+                saveGame();
+            }
+        },
+
+        toMining: function(id) {
+            if (miningFarm.length >= miningSlots) return alert("Нет свободных слотов!");
+            let idx = warehouse.findIndex(p => p.id === id);
+            if (idx !== -1) {
+                miningFarm.push(warehouse[idx]);
+                warehouse.splice(idx, 1);
+                this.renderWarehouse();
+                updateUI();
+                saveGame();
+            }
+        },
+
+        buyUpgrade: function(id, cost) {
+            if (money >= cost) {
+                money -= cost;
+                upgrades[id]++;
+                if (id === 'slotsLevel') miningSlots++;
+                updateUI();
+                this.renderUpgrades();
+                saveGame();
+            }
+        },
+
+        // Рендер-функции перенесены внутрь для доступа к приватным переменным
+        renderWarehouse: function() {
+            const grid = document.getElementById('market-sell');
+            grid.innerHTML = warehouse.map(p => `
+                <div class="item-card">
+                    <h3>${p.name}</h3>
+                    <button class="btn-action" onclick="Engine.sell(${p.id})">Продать</button>
+                    <button class="btn-secondary" onclick="Engine.toMining(${p.id})">В майнинг</button>
+                </div>
+            `).join('');
+        },
+
+        renderUpgrades: function() {
+            const upgData = [
+                { id: 'speedLevel', name: 'Скорость', base: 1000 },
+                { id: 'slotsLevel', name: 'Слоты', base: 5000 },
+                { id: 'marketingLevel', name: 'Маркетинг', base: 2500 },
+                { id: 'miningBoostLevel', name: 'Оверклокинг', base: 4000 }
+            ];
+            document.getElementById('upgrades-list').innerHTML = upgData.map(u => {
+                let cost = u.base * (upgrades[u.id] + 1);
+                return `<div class="item-card">
+                    <h3>${u.name} (Ур. ${upgrades[u.id]})</h3>
+                    <button class="btn-action" onclick="Engine.buyUpgrade('${u.id}', ${cost})">Купить за $${cost}</button>
+                </div>`;
+            }).join('');
+        },
+
+        toggleTheme: function() {
+            const html = document.documentElement;
+            html.setAttribute('data-theme', html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+        },
+
+        tick: function() {
+            let baseIncome = miningFarm.reduce((sum, p) => sum + p.mine, 0);
+            let totalIncome = Math.floor(baseIncome * (1 + upgrades.miningBoostLevel * 0.05));
+            if (totalIncome > 0) {
+                money += totalIncome;
+                updateUI();
+            }
         }
-    }, 50);
-}
+    };
+})();
 
-// 2. Рендер вкладок
-function renderWarehouse() {
-    const grid = document.getElementById('market-sell');
-    grid.innerHTML = warehouse.map(p => {
-        let sellPrice = Math.floor(p.cost * (1 + upgrades.marketingLevel * 0.15));
-        return `
-            <div class="item-card">
-                <h3>${p.name}</h3>
-                <p>Цена: <b>$${sellPrice.toLocaleString()}</b></p>
-                <button class="btn-action" onclick="sellPhone(${p.id})">Продать</button>
-                <button class="btn-secondary" onclick="toMining(${p.id})">В майнинг</button>
-            </div>
-        `;
-    }).join('');
-}
+// Запуск
+window.onload = Engine.init;
+setInterval(() => Engine.tick(), 1000);
 
-function renderMining() {
-    const grid = document.getElementById('mining-grid');
-    grid.innerHTML = miningFarm.map(p => {
-        let actualMine = Math.floor(p.mine * (1 + upgrades.miningBoostLevel * 0.05));
-        return `
-            <div class="item-card">
-                <h3>${p.name}</h3>
-                <p>Доход: <b>$${actualMine.toLocaleString()}/с</b></p>
-                <button class="btn-secondary" onclick="removeFromMining(${p.id})">Снять</button>
-            </div>
-        `;
-    }).join('');
-}
-
-function renderUpgrades() {
-    const data = [
-        { id: 'speedLevel', name: 'Конвейер', desc: '+25% к скорости', base: 1000 },
-        { id: 'slotsLevel', name: 'Стеллажи', desc: '+1 место на ферме', base: 5000 },
-        { id: 'marketingLevel', name: 'PR-отдел', desc: '+15% к цене продажи', base: 3000 },
-        { id: 'miningBoostLevel', name: 'Оверклокинг', desc: '+5% к майнингу', base: 4500 }
-    ];
-
-    document.getElementById('upgrades-list').innerHTML = data.map(u => {
-        let cost = u.base * Math.pow(1.5, upgrades[u.id]);
-        return `
-            <div class="item-card">
-                <h3>${u.name} [Ур. ${upgrades[u.id]}]</h3>
-                <p>${u.desc}</p>
-                <button class="btn-action" onclick="buyUpgrade('${u.id}', ${cost})">Улучшить: $${Math.floor(cost).toLocaleString()}</button>
-            </div>
-        `;
-    }).join('');
-}
-
-function renderIndex() {
-    document.getElementById('index-grid').innerHTML = phonesDB.map(p => {
-        const unlocked = p.count > 0;
-        return `
-            <div class="item-card ${unlocked ? '' : 'locked-card'}">
-                ${unlocked ? `<div class="index-badge">${p.count} шт.</div>` : ''}
-                <h3>${unlocked ? p.name : '???'}</h3>
-                <p>$${p.cost.toLocaleString()} | $${p.mine}/с</p>
-            </div>
-        `;
-    }).join('');
-}
-
-// 3. Действия
-function sellPhone(id) {
-    let idx = warehouse.findIndex(p => p.id === id);
-    if (idx !== -1) {
-        money += Math.floor(warehouse[idx].cost * (1 + upgrades.marketingLevel * 0.15));
-        warehouse.splice(idx, 1);
-        renderWarehouse(); updateUI(); saveGame();
-    }
-}
-
-function toMining(id) {
-    if (miningFarm.length >= miningSlots) return alert("Нет свободных мест на ферме!");
-    let idx = warehouse.findIndex(p => p.id === id);
-    if (idx !== -1) {
-        miningFarm.push(warehouse[idx]);
-        warehouse.splice(idx, 1);
-        renderWarehouse(); updateUI(); saveGame();
-    }
-}
-
-function removeFromMining(id) {
-    let idx = miningFarm.findIndex(p => p.id === id);
-    if (idx !== -1) {
-        warehouse.push(miningFarm[idx]);
-        miningFarm.splice(idx, 1);
-        renderMining(); updateUI(); saveGame();
-    }
-}
-
-function buyUpgrade(id, cost) {
-    if (money >= cost) {
-        money -= cost;
-        upgrades[id]++;
-        if (id === 'slotsLevel') miningSlots++;
-        renderUpgrades(); updateUI(); saveGame();
-    }
-}
-
-// 4. Ядро системы
-function updateUI() {
-    document.getElementById('money-display').innerText = '$' + Math.floor(money).toLocaleString();
-    let income = Math.floor(miningFarm.reduce((s, p) => s + p.mine, 0) * (1 + upgrades.miningBoostLevel * 0.05));
-    document.getElementById('mining-rate').innerText = income.toLocaleString();
-    document.getElementById('slots-count').innerText = `${miningFarm.length} / ${miningSlots}`;
-    document.getElementById('stats-total-built').innerText = statsTotalBuilt;
-    document.getElementById('speed-bonus').innerText = (100 + upgrades.speedLevel * 25) + '%';
-}
-
-function openTab(tabId) {
-    document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
-    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-    document.getElementById(tabId).classList.add('active');
-    document.getElementById('btn-' + tabId).classList.add('active');
-    
-    if(tabId === 'warehouse') renderWarehouse();
-    if(tabId === 'mining') renderMining();
-    if(tabId === 'shop') renderUpgrades();
-    if(tabId === 'index') renderIndex();
-}
-
-// Пассивный доход
-setInterval(() => {
-    let income = Math.floor(miningFarm.reduce((s, p) => s + p.mine, 0) * (1 + upgrades.miningBoostLevel * 0.05));
-    if (income > 0) { money += income; updateUI(); }
-}, 1000);
-
-function toggleTheme() {
-    const html = document.documentElement;
-    html.setAttribute('data-theme', html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
-}
-
-function saveGame() {
-    localStorage.setItem('pme_mobile_v1', JSON.stringify({ money, warehouse, miningFarm, upgrades, miningSlots, statsTotalBuilt, phonesDB }));
-}
-
-function loadGame() {
-    const saved = localStorage.getItem('pme_mobile_v1');
-    if (saved) {
-        const d = JSON.parse(saved);
-        money = d.money; warehouse = d.warehouse; miningFarm = d.miningFarm;
-        upgrades = d.upgrades; miningSlots = d.miningSlots; statsTotalBuilt = d.statsTotalBuilt;
-        d.phonesDB.forEach(sd => {
-            let p = phonesDB.find(x => x.name === sd.name);
-            if(p) p.count = sd.count || 0;
-        });
-    }
-    updateUI();
-    startBuildLoop();
-}
-
-window.onload = loadGame;
+// Анти-отладка (зацикливаем дебаггер при открытии консоли)
+(function() {
+    let devtools = function() {};
+    devtools.toString = function() {
+        setInterval(() => { debugger; }, 50);
+        return "";
+    };
+    console.log("%c", devtools);
+}());
