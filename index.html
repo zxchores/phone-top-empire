@@ -3,25 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Phone Market Empire | Random Edition</title>
+    <title>Phone Market Empire | Secure Pro</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://api.fontshare.com/v2/css?f[]=clash-display@600,700&f[]=general-sans@400,500,600&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div id="toast-container"></div>
-
     <aside class="sidebar">
         <div class="sidebar-header">
             <div class="logo">SILICON<span>.</span></div>
-            <button class="theme-toggle" onclick="toggleTheme()">🌓</button>
+            <button class="theme-toggle" onclick="Engine.toggleTheme()">🌓</button>
         </div>
 
         <nav class="nav-menu">
-            <button class="nav-btn active" id="btn-factory" onclick="openTab('factory')"><i>🏭</i> Линия</button>
-            <button class="nav-btn" id="btn-warehouse" onclick="openTab('warehouse')"><i>📦</i> Склад</button>
-            <button class="nav-btn" id="btn-mining" onclick="openTab('mining')"><i>⚡</i> Ферма</button>
-            <button class="nav-btn" id="btn-shop" onclick="openTab('shop')"><i>🛒</i> Магазин</button>
-            <button class="nav-btn" id="btn-index" onclick="openTab('index')"><i>📖</i> Индекс</button>
+            <button class="nav-btn active" id="btn-factory" onclick="Engine.openTab('factory')"><i>🏭</i> Линия</button>
+            <button class="nav-btn" id="btn-warehouse" onclick="openTabWrapper('warehouse')"><i>📦</i> Склад</button>
+            <button class="nav-btn" id="btn-mining" onclick="openTabWrapper('mining')"><i>⚡</i> Ферма</button>
+            <button class="nav-btn" id="btn-shop" onclick="openTabWrapper('shop')"><i>🛒</i> Магазин</button>
+            <button class="nav-btn" id="btn-index" onclick="openTabWrapper('index')"><i>📖</i> Индекс</button>
         </nav>
 
         <div class="balance-card">
@@ -36,22 +34,18 @@
             <div class="factory-container">
                 <div class="conveyor-belt">
                     <div id="active-phone-card" class="phone-preview">
-                        <div class="item-card">
-                            <h3>Запуск системы...</h3>
-                        </div>
+                        <div class="item-card"><h3>Запуск системы...</h3></div>
                     </div>
                 </div>
-
                 <div class="progress-zone">
                     <div class="bar-container">
-                        <div id="auto-progress-fill" class="bar-fill"><div class="laser"></div></div>
+                        <div id="auto-progress-fill" class="bar-fill"></div>
                     </div>
                     <div class="bar-info">
                         <span id="progress-percent">0%</span>
                         <span id="time-left">0.0s</span>
                     </div>
                 </div>
-
                 <div class="mini-stats">
                     <div class="ms-item">Собрано: <b id="stats-total-built">0</b></div>
                     <div class="ms-item">Скорость: <b id="speed-bonus">100%</b></div>
@@ -78,14 +72,15 @@
         </section>
 
         <section id="index" class="tab-content">
-            <div class="section-header">
-                <h2>Индекс моделей</h2>
-                <p>Статистика всех найденных устройств</p>
-            </div>
+            <div class="section-header"><h2>Индекс моделей</h2></div>
             <div class="grid" id="index-grid"></div>
         </section>
     </main>
 
     <script src="script.js"></script>
+    <script>
+        // Маленький посредник для вкладок, чтобы не ломать структуру
+        function openTabWrapper(id) { Engine.openTab(id); }
+    </script>
 </body>
 </html>
